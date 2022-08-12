@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 6023855433588607585}
   - component: {fileID: 6023855433588607584}
   - component: {fileID: 6023855433588607615}
+  - component: {fileID: 2039887666}
+  - component: {fileID: 6749135622506414799}
   m_Layer: 9
   m_Name: Bomb
   m_TagString: Bomb
@@ -111,3 +113,54 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &2039887666
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6023855433588607614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1a9a3b204fcc33469768292133d0c87, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FireTop: {fileID: 4752948600000927215, guid: 046caf4994fdc9d43897ce3866571715, type: 3}
+  FireVertical: {fileID: 58236550657003406, guid: f11c53c4b831fba45aea228579b578b6, type: 3}
+  FireMid: {fileID: 1531483241125781607, guid: e600bccc72e335c42896f14ee5f1e844, type: 3}
+  FireLeft: {fileID: 8663325111161624721, guid: 20647bbe6b6022947999d94aaff0d791, type: 3}
+  FireHorizontal: {fileID: 1717330509568620574, guid: af96b830a5f059f4a9dd68f8d2daec86, type: 3}
+  FireRight: {fileID: 2389612651145785076, guid: 2aef7524286e1d34f97630a6e1f46ff4, type: 3}
+  FireBottom: {fileID: 4482744719484961208, guid: 7871a0a922d30f04d863de46b58ee687, type: 3}
+  Delay: 2
+  StoneLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  BlowableLayer:
+    serializedVersion: 2
+    m_Bits: 1536
+  CellsToBlowR: []
+  CellsToBlowL: []
+  CellsToBlowU: []
+  CellsToBlowD: []
+--- !u!50 &6749135622506414799
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6023855433588607614}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 7

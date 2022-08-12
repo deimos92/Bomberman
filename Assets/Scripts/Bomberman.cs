@@ -15,8 +15,9 @@ namespace BombermanGame
         [SerializeField] private bool ButtonDetonate;
         [SerializeField] private bool CanMove;
         private bool InsideBomb;
-        
-        
+        private bool InsideFire;
+
+
         private int Direction;
 
         private int BombsAllowed;
@@ -29,14 +30,16 @@ namespace BombermanGame
         public float MoveSpeed = 2;
 
         public LayerMask StoneLayer;
+        public LayerMask BrickLayer;
         public LayerMask BombLayer;
+        public LayerMask FireLayer;
 
         public GameObject Bomb;
 
         private void Start()
         {
             BombsAllowed = 2;
-            FireLength = 3;
+            FireLength = 1;
         }
 
         private void Update()
@@ -50,10 +53,10 @@ namespace BombermanGame
 
         private void HandleBombs()
         {
-            
-            if (ButtonBomb && GameObject.FindGameObjectsWithTag("Bomb").Length < BombsAllowed)
+            if (ButtonBomb && GameObject.FindGameObjectsWithTag("Bomb").Length < BombsAllowed && !InsideBomb && !InsideFire)
             {
-                Instantiate(Bomb, new Vector2(Mathf.Round(transform.position.x), Mathf.Round(transform.position.y)), transform.rotation);
+                Instantiate(Bomb, new Vector2(Mathf.Round(transform.position.x), Mathf.Round(transform.position.y)),
+                    transform.rotation);
             }
         }
 
@@ -96,8 +99,8 @@ namespace BombermanGame
             ButtonDown = !Input.GetKey(KeyCode.LeftArrow) && !Input.GetKey(KeyCode.RightArrow) &&
                          !Input.GetKey(KeyCode.UpArrow) && Input.GetKey(KeyCode.DownArrow);
 
-            ButtonBomb = Input.GetKey(KeyCode.Z);
-            ButtonDetonate = Input.GetKey(KeyCode.X);
+            ButtonBomb = Input.GetKeyDown(KeyCode.Z);
+            ButtonDetonate = Input.GetKeyDown(KeyCode.X);
         }
 
         private void GetDirection()
@@ -113,6 +116,7 @@ namespace BombermanGame
         {
             Sensor.transform.localPosition = new Vector2(0, 0);
             InsideBomb = Physics2D.OverlapBox(Sensor.position, new Vector2(SensorSize, SensorSize), 0, BombLayer);
+            InsideFire = Physics2D.OverlapBox(Sensor.position, new Vector2(SensorSize, SensorSize), 0, FireLayer);
             switch (Direction)
             {
                 case 2:
@@ -133,9 +137,10 @@ namespace BombermanGame
             }
 
             CanMove = !Physics2D.OverlapBox(Sensor.position, new Vector2(SensorSize, SensorSize), 0, StoneLayer);
+            if (CanMove)
+                CanMove = !Physics2D.OverlapBox(Sensor.position, new Vector2(SensorSize, SensorSize), 0, BrickLayer);
             if (CanMove && !InsideBomb)
                 CanMove = !Physics2D.OverlapBox(Sensor.position, new Vector2(SensorSize, SensorSize), 0, BombLayer);
-            
         }
 
         public void IncreaseAllowedBombs()

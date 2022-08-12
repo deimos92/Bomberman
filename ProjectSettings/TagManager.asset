@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Stone
+  - Bomb
+  - Brick
+  - Fire
   layers:
   - Default
   - TransparentFX
@@ -15,9 +18,9 @@ TagManager:
   - 
   - 
   - Stone
-  - 
-  - 
-  - 
+  - Bomb
+  - Brick
+  - Fire
   - 
   - 
   - 
