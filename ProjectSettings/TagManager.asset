@@ -8,6 +8,7 @@ TagManager:
   - Bomb
   - Brick
   - Fire
+  - PowerUp
   layers:
   - Default
   - TransparentFX
@@ -21,7 +22,7 @@ TagManager:
   - Bomb
   - Brick
   - Fire
-  - 
+  - PowerUp
   - 
   - 
   - 

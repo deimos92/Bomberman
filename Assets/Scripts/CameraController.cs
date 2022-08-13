@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -9,18 +6,11 @@ namespace BombermanGame
     public class CameraController : MonoBehaviour
     {
         public Field field;
-        public struct Field
-        {
-            public float MinX;
-            public float MinY;
-            public float MaxX;
-            public float MaxY;
-        }
 
         private void Start()
         {
             var listOfStones = GameObject.FindGameObjectsWithTag("Stone").ToArray();
-            field = new Field()
+            field = new Field
             {
                 MinX = listOfStones.Min(x => x.transform.position.x) - 0.5f,
                 MinY = listOfStones.Min(x => x.transform.position.y) - 0.5f,
@@ -31,10 +21,10 @@ namespace BombermanGame
 
         private void Update()
         {
-            float cameraHalfHeight = GetComponent<Camera>().orthographicSize;
-            float cameraHalfWidth = cameraHalfHeight * ((float)Screen.width / Screen.height);
+            var cameraHalfHeight = GetComponent<Camera>().orthographicSize;
+            var cameraHalfWidth = cameraHalfHeight * ((float)Screen.width / Screen.height);
 
-            var bomberman = FindObjectOfType<Bomberman>().transform.position;
+            Vector3 bomberman = FindObjectOfType<Bomberman>().transform.position;
             var x = bomberman.x;
             var y = bomberman.y;
 
@@ -50,6 +40,14 @@ namespace BombermanGame
             Gizmos.DrawLine(new Vector2(field.MinX, field.MaxY), new Vector2(field.MaxX, field.MaxY));
             Gizmos.DrawLine(new Vector2(field.MinX, field.MinY), new Vector2(field.MinX, field.MaxY));
             Gizmos.DrawLine(new Vector2(field.MaxX, field.MinY), new Vector2(field.MaxX, field.MaxY));
+        }
+
+        public struct Field
+        {
+            public float MinX;
+            public float MinY;
+            public float MaxX;
+            public float MaxY;
         }
     }
 }

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace BombermanGame
@@ -16,8 +14,10 @@ namespace BombermanGame
 
         private void Update()
         {
-            if (Counter > 0) Counter -= Time.deltaTime;
-            else Destroy(gameObject);
+            if (Counter > 0)
+                Counter -= Time.deltaTime;
+            else
+                Destroy(gameObject);
         }
     }
 }
