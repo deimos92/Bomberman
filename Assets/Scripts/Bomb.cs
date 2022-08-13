@@ -42,43 +42,35 @@ namespace BombermanGame
 
         private void Update()
         {
-            if (Counter > 0) Counter -= Time.deltaTime;
-            else Blow();
+            if (Counter > 0)
+                Counter -= Time.deltaTime;
+            else
+                Blow();
         }
 
         private void Blow()
         {
             CalculateFireDirections();
             Instantiate(FireMid, transform.position, transform.rotation);
-            if (CellsToBlowL.Count > 0)
-                for (int i = 0; i < CellsToBlowL.Count; i++)
-                {
-                    if (i == CellsToBlowL.Count - 1) Instantiate(FireLeft, CellsToBlowL[i], transform.rotation);
-                    else Instantiate(FireHorizontal, CellsToBlowL[i], transform.rotation);
-                }
-
-            if (CellsToBlowR.Count > 0)
-                for (int i = 0; i < CellsToBlowR.Count; i++)
-                {
-                    if (i == CellsToBlowR.Count - 1) Instantiate(FireRight, CellsToBlowR[i], transform.rotation);
-                    else Instantiate(FireHorizontal, CellsToBlowR[i], transform.rotation);
-                }
-
-            if (CellsToBlowU.Count > 0)
-                for (int i = 0; i < CellsToBlowU.Count; i++)
-                {
-                    if (i == CellsToBlowU.Count - 1) Instantiate(FireTop, CellsToBlowU[i], transform.rotation);
-                    else Instantiate(FireVertical, CellsToBlowU[i], transform.rotation);
-                }
-
-            if (CellsToBlowD.Count > 0)
-                for (int i = 0; i < CellsToBlowD.Count; i++)
-                {
-                    if (i == CellsToBlowD.Count - 1) Instantiate(FireBottom, CellsToBlowD[i], transform.rotation);
-                    else Instantiate(FireVertical, CellsToBlowD[i], transform.rotation);
-                }
+            
+            IsCellToBlow(CellsToBlowL, FireLeft, FireHorizontal);
+            IsCellToBlow(CellsToBlowR, FireRight, FireHorizontal);
+            IsCellToBlow(CellsToBlowU, FireTop, FireVertical);
+            IsCellToBlow(CellsToBlowD, FireBottom, FireVertical);
 
             Destroy(gameObject);
+        }
+
+        private void IsCellToBlow(List<Vector2> cellsToBlow, GameObject finiteFire, GameObject mediateFire)
+        {
+            if (cellsToBlow.Count > 0)
+                for (int i = 0; i < cellsToBlow.Count; i++)
+                {
+                    if (i == cellsToBlow.Count - 1)
+                        Instantiate(finiteFire, cellsToBlow[i], transform.rotation);
+                    else
+                        Instantiate(mediateFire, cellsToBlow[i], transform.rotation);
+                }
         }
 
         private void CalculateFireDirections()
@@ -98,7 +90,7 @@ namespace BombermanGame
             CheckFireDirection(CellsToBlowD, i => new Vector2(transform.position.x, transform.position.y - 1));
         }
 
-       
+
         private void CheckFireDirection(List<Vector2> blowDirection, Func<int, Vector2> direction)
         {
             for (int i = 1; i <= FireLength; i++)
@@ -116,29 +108,21 @@ namespace BombermanGame
 
         private void OnDrawGizmos()
         {
-            foreach (var item in CellsToBlowL)
+            void DrawGizmosOnDirection(List<Vector2> cellsToBlowDirection, Color color)
             {
-                Gizmos.color = Color.yellow;
-                Gizmos.DrawSphere(item, 0.2f);
+                foreach (var item in cellsToBlowDirection)
+                {
+                    Gizmos.color = color;
+                    Gizmos.DrawSphere(item, 0.2f);
+                }
             }
 
-            foreach (var item in CellsToBlowR)
-            {
-                Gizmos.color = Color.green;
-                Gizmos.DrawSphere(item, 0.2f);
-            }
+            DrawGizmosOnDirection(CellsToBlowL, Color.yellow);
+            DrawGizmosOnDirection(CellsToBlowR, Color.green);
+            DrawGizmosOnDirection(CellsToBlowU, Color.blue);
+            DrawGizmosOnDirection(CellsToBlowD, Color.gray);
 
-            foreach (var item in CellsToBlowU)
-            {
-                Gizmos.color = Color.blue;
-                Gizmos.DrawSphere(item, 0.2f);
-            }
-
-            foreach (var item in CellsToBlowD)
-            {
-                Gizmos.color = Color.gray;
-                Gizmos.DrawSphere(item, 0.2f);
-            }
+            
         }
 
         void OnTriggerEnter2D(Collider2D other)

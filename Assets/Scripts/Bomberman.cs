@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace BombermanGame
 {
@@ -14,8 +15,9 @@ namespace BombermanGame
         [SerializeField] private bool ButtonBomb;
         [SerializeField] private bool ButtonDetonate;
         [SerializeField] private bool CanMove;
-        private bool InsideBomb;
-        private bool InsideFire;
+        [SerializeField]private bool IsMoving;
+        [SerializeField]private bool InsideBomb;
+        [SerializeField]private bool InsideFire;
 
 
         private int Direction;
@@ -49,11 +51,20 @@ namespace BombermanGame
             HandleSensor();
             HandleBombs();
             Move();
+            Animate();
+        }
+
+        private void Animate()
+        {
+            var animator = GetComponent<Animator>();
+            animator.SetInteger("Direction", Direction);
+            animator.SetBool("Moving", IsMoving);
         }
 
         private void HandleBombs()
         {
-            if (ButtonBomb && GameObject.FindGameObjectsWithTag("Bomb").Length < BombsAllowed && !InsideBomb && !InsideFire)
+            if (ButtonBomb && GameObject.FindGameObjectsWithTag("Bomb").Length < BombsAllowed && !InsideBomb &&
+                !InsideFire)
             {
                 Instantiate(Bomb, new Vector2(Mathf.Round(transform.position.x), Mathf.Round(transform.position.y)),
                     transform.rotation);
@@ -62,8 +73,13 @@ namespace BombermanGame
 
         private void Move()
         {
-            if (!CanMove) return;
+            if (!CanMove)
+            {
+                IsMoving = false; 
+                return;
+            }
 
+            IsMoving = true;
             switch (Direction)
             {
                 case 2:
@@ -84,6 +100,7 @@ namespace BombermanGame
                     break;
                 default:
                     Sensor.transform.localPosition = new Vector2(0, 0);
+                    IsMoving = false;
                     break;
             }
         }
@@ -106,10 +123,14 @@ namespace BombermanGame
         private void GetDirection()
         {
             Direction = 5;
-            if (ButtonLeft) Direction = 4;
-            if (ButtonRight) Direction = 6;
-            if (ButtonDown) Direction = 2;
-            if (ButtonUp) Direction = 8;
+            if (ButtonLeft)
+                Direction = 4;
+            if (ButtonRight)
+                Direction = 6;
+            if (ButtonDown)
+                Direction = 2;
+            if (ButtonUp)
+                Direction = 8;
         }
 
         private void HandleSensor()
@@ -124,9 +145,11 @@ namespace BombermanGame
                     break;
                 case 4:
                     Sensor.transform.localPosition = new Vector2(SensorRange, 0);
+                    transform.localScale = new Vector3(-1, 1, 1);
                     break;
                 case 6:
                     Sensor.transform.localPosition = new Vector2(-SensorRange, 0);
+                    transform.localScale = new Vector3(1, 1, 1);
                     break;
                 case 8:
                     Sensor.transform.localPosition = new Vector2(0, SensorRange);
