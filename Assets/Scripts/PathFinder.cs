@@ -7,14 +7,15 @@ namespace BombermanGame
     public class PathFinder : MonoBehaviour
     {
         public List<Vector2> PathToTarget;
-        private List<Node> CheckedNodes  = new List<Node>();
+        public List<Node> CheckedNodes  = new List<Node>();
         private List<Node> WaitingNodes  = new List<Node>();
+        public List<Node> FreeNodes = new List<Node>();
         public GameObject Target;
         public LayerMask SolidLayer;
 
         private void Update()
         {
-            PathToTarget = GetPath(Target.transform.position);
+            //PathToTarget = GetPath(Target.transform.position);
         }
 
         public List<Vector2> GetPath(Vector2 target)
@@ -58,6 +59,7 @@ namespace BombermanGame
                 }
             }
 
+            FreeNodes = CheckedNodes;
             return PathToTarget;
         }
 

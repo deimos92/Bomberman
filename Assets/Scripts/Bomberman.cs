@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace BombermanGame
@@ -27,6 +28,7 @@ namespace BombermanGame
         public LayerMask FireLayer;
 
         public GameObject Bomb;
+        public GameObject DeathEffect;
 
 
         private int BombsAllowed;
@@ -60,6 +62,8 @@ namespace BombermanGame
             Move();
             Animate();
         }
+        
+       
 
         private void OnTriggerEnter2D(Collider2D other)
         {
@@ -94,6 +98,20 @@ namespace BombermanGame
             }
         }
 
+        public void Damage(int damageSource)
+        {
+            if (damageSource == 2)
+                Die();
+            else if (damageSource == 1 && !NoclipFire)
+                Die();
+        }
+
+        private void Die()
+        {
+            Instantiate(DeathEffect, transform.position, transform.rotation);
+            Destroy(gameObject);
+        }
+
         private void Animate()
         {
             Animator animator = GetComponent<Animator>();
@@ -105,8 +123,16 @@ namespace BombermanGame
         {
             if (ButtonBomb && GameObject.FindGameObjectsWithTag("Bomb").Length < BombsAllowed && !InsideBomb &&
                 !InsideFire && !InsideWall)
+            {
                 Instantiate(Bomb, new Vector2(Mathf.Round(transform.position.x), Mathf.Round(transform.position.y)),
-                    transform.rotation);
+                                    transform.rotation);
+                var enemies = FindObjectsOfType<Enemy>();
+                foreach (var item in enemies)
+                {
+                    item.RecalculatePath();
+                }
+            }
+                
 
             if (ButtonDetonate)
             {

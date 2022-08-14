@@ -21,12 +21,16 @@ namespace BombermanGame
 
         private void Update()
         {
+            var bomberman = FindObjectOfType<Bomberman>();
+            if (bomberman == null)
+                return;
+            
             var cameraHalfHeight = GetComponent<Camera>().orthographicSize;
             var cameraHalfWidth = cameraHalfHeight * ((float)Screen.width / Screen.height);
 
-            Vector3 bomberman = FindObjectOfType<Bomberman>().transform.position;
-            var x = bomberman.x;
-            var y = bomberman.y;
+            var bombermanPosition = bomberman.transform.position;
+            var x = bombermanPosition.x;
+            var y = bombermanPosition.y;
 
             x = Mathf.Clamp(x, field.MinX + cameraHalfWidth, field.MaxX - cameraHalfWidth);
             y = Mathf.Clamp(y, field.MinY + cameraHalfHeight, field.MaxY - cameraHalfHeight);
