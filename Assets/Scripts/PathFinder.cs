@@ -35,7 +35,7 @@ namespace BombermanGame
             WaitingNodes.AddRange(GetNeighbourNodes(startNode));
             while (WaitingNodes.Count > 0)
             {
-                Node nodeToCheck = WaitingNodes.Where(x => x.F == WaitingNodes.Min(y => y.F)).FirstOrDefault();
+                Node nodeToCheck = WaitingNodes.Where(x => x.CostOfMovement == WaitingNodes.Min(y => y.CostOfMovement)).FirstOrDefault();
                 
                 if (nodeToCheck.Position == TargetPosition)
                 {
@@ -81,13 +81,13 @@ namespace BombermanGame
         {
             var Neighbours = new List<Node>();
 
-            Neighbours.Add(new Node(node.G + 1, new Vector2(node.Position.x - 1, node.Position.y), node.TargetPosition,
+            Neighbours.Add(new Node(node.DistanceFromStartToNode + 1, new Vector2(node.Position.x - 1, node.Position.y), node.TargetPosition,
                 node));
-            Neighbours.Add(new Node(node.G + 1, new Vector2(node.Position.x + 1, node.Position.y), node.TargetPosition,
+            Neighbours.Add(new Node(node.DistanceFromStartToNode + 1, new Vector2(node.Position.x + 1, node.Position.y), node.TargetPosition,
                 node));
-            Neighbours.Add(new Node(node.G + 1, new Vector2(node.Position.x, node.Position.y - 1), node.TargetPosition,
+            Neighbours.Add(new Node(node.DistanceFromStartToNode + 1, new Vector2(node.Position.x, node.Position.y - 1), node.TargetPosition,
                 node));
-            Neighbours.Add(new Node(node.G + 1, new Vector2(node.Position.x, node.Position.y + 1), node.TargetPosition,
+            Neighbours.Add(new Node(node.DistanceFromStartToNode + 1, new Vector2(node.Position.x, node.Position.y + 1), node.TargetPosition,
                 node));
 
             return Neighbours;
@@ -107,25 +107,5 @@ namespace BombermanGame
                     Gizmos.DrawSphere(new Vector2(item.x, item.y), 0.2f);
                 }
         }
-    }
-}
-
-public class Node
-{
-    public Vector2 Position;
-    public Vector2 TargetPosition;
-    public Node PreviousNode;
-    public int F; // G+H
-    public int G; //from start to Node
-    public int H; //from Node to Target
-
-    public Node(int g, Vector2 nodePosition, Vector2 targetPosition, Node previousNode)
-    {
-        Position = nodePosition;
-        TargetPosition = targetPosition;
-        PreviousNode = previousNode;
-        G = g;
-        H = (int)Mathf.Abs(targetPosition.x - Position.x) + (int)Mathf.Abs(targetPosition.y - Position.y);
-        F = G + H;
     }
 }

@@ -1,3 +1,5 @@
+using System;
+using Bomberman;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -5,17 +7,14 @@ namespace BombermanGame
 {
     public class Bomberman : MonoBehaviour
     {
-        [SerializeField] private bool ButtonLeft;
-        [SerializeField] private bool ButtonRight;
-        [SerializeField] private bool ButtonUp;
-        [SerializeField] private bool ButtonDown;
-        [SerializeField] private bool ButtonBomb;
         [SerializeField] private bool ButtonDetonate;
         [SerializeField] private bool CanMove;
         [SerializeField] private bool IsMoving;
         [SerializeField] private bool InsideBomb;
         [SerializeField] private bool InsideFire;
 
+
+        private PlayerInput _input;
 
         public Transform Sensor;
         public float SensorSize = 0.7f;
@@ -44,6 +43,25 @@ namespace BombermanGame
         private float SpeedBoost;
         private int SpeedBoots;
 
+
+        private void Awake()
+        {
+            _input = new PlayerInput();
+            _input.Player.Bomb.performed += context => HandleBombs();
+            _input.Player.Detonator.performed += context => Detonate();
+        }
+
+        private void OnEnable()
+        {
+            _input.Enable();
+        }
+
+        private void OnDisable()
+        {
+            _input.Disable();
+        }
+
+
         private void Start()
         {
             BombsAllowed = 1;
@@ -55,15 +73,13 @@ namespace BombermanGame
 
         private void Update()
         {
-            GetInput();
-            GetDirection();
+            Vector2 direction = _input.Player.Move.ReadValue<Vector2>();
+            GetDirection(direction);
             HandleSensor();
-            HandleBombs();
             Move();
             Animate();
         }
-        
-       
+
 
         private void OnTriggerEnter2D(Collider2D other)
         {
@@ -121,27 +137,28 @@ namespace BombermanGame
 
         private void HandleBombs()
         {
-            if (ButtonBomb && GameObject.FindGameObjectsWithTag("Bomb").Length < BombsAllowed && !InsideBomb &&
+            if (GameObject.FindGameObjectsWithTag("Bomb").Length < BombsAllowed && !InsideBomb &&
                 !InsideFire && !InsideWall)
             {
                 Instantiate(Bomb, new Vector2(Mathf.Round(transform.position.x), Mathf.Round(transform.position.y)),
-                                    transform.rotation);
+                    transform.rotation);
                 var enemies = FindObjectsOfType<Enemy>();
                 foreach (var item in enemies)
                 {
                     item.RecalculatePath();
                 }
             }
-                
+        }
 
-            if (ButtonDetonate)
+        private void Detonate()
+        {
+            if (HasDetonator)
             {
                 var bombs = FindObjectsOfType<Bomb>();
                 foreach (var bomb in bombs)
                 {
                     bomb.Blow();
                 }
-                    
             }
         }
 
@@ -184,31 +201,31 @@ namespace BombermanGame
             }
         }
 
-        private void GetInput()
-        {
-            ButtonRight = !Input.GetKey(KeyCode.LeftArrow) && Input.GetKey(KeyCode.RightArrow) &&
-                          !Input.GetKey(KeyCode.UpArrow) && !Input.GetKey(KeyCode.DownArrow);
-            ButtonLeft = Input.GetKey(KeyCode.LeftArrow) && !Input.GetKey(KeyCode.RightArrow) &&
-                         !Input.GetKey(KeyCode.UpArrow) && !Input.GetKey(KeyCode.DownArrow);
-            ButtonUp = !Input.GetKey(KeyCode.LeftArrow) && !Input.GetKey(KeyCode.RightArrow) &&
-                       Input.GetKey(KeyCode.UpArrow) && !Input.GetKey(KeyCode.DownArrow);
-            ButtonDown = !Input.GetKey(KeyCode.LeftArrow) && !Input.GetKey(KeyCode.RightArrow) &&
-                         !Input.GetKey(KeyCode.UpArrow) && Input.GetKey(KeyCode.DownArrow);
+        // private void GetInput()
+        // {
+        //     // ButtonRight = !Input.GetKey(KeyCode.LeftArrow) && Input.GetKey(KeyCode.RightArrow) &&
+        //     //               !Input.GetKey(KeyCode.UpArrow) && !Input.GetKey(KeyCode.DownArrow);
+        //     // ButtonLeft = Input.GetKey(KeyCode.LeftArrow) && !Input.GetKey(KeyCode.RightArrow) &&
+        //     //              !Input.GetKey(KeyCode.UpArrow) && !Input.GetKey(KeyCode.DownArrow);
+        //     // ButtonUp = !Input.GetKey(KeyCode.LeftArrow) && !Input.GetKey(KeyCode.RightArrow) &&
+        //     //            Input.GetKey(KeyCode.UpArrow) && !Input.GetKey(KeyCode.DownArrow);
+        //     // ButtonDown = !Input.GetKey(KeyCode.LeftArrow) && !Input.GetKey(KeyCode.RightArrow) &&
+        //     //              !Input.GetKey(KeyCode.UpArrow) && Input.GetKey(KeyCode.DownArrow);
+        //     //
+        //     // ButtonBomb = Input.GetKeyDown(KeyCode.Z);
+        //     // ButtonDetonate = Input.GetKeyDown(KeyCode.X);
+        // }
 
-            ButtonBomb = Input.GetKeyDown(KeyCode.Z);
-            ButtonDetonate = Input.GetKeyDown(KeyCode.X);
-        }
-
-        private void GetDirection()
+        private void GetDirection(Vector2 direction)
         {
             Direction = 5;
-            if (ButtonLeft)
+            if (direction == Vector2.left)
                 Direction = 4;
-            if (ButtonRight)
+            if (direction == Vector2.right)
                 Direction = 6;
-            if (ButtonDown)
+            if (direction == Vector2.down)
                 Direction = 2;
-            if (ButtonUp)
+            if (direction == Vector2.up)
                 Direction = 8;
         }
 

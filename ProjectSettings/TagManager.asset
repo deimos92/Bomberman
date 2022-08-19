@@ -9,6 +9,7 @@ TagManager:
   - Brick
   - Fire
   - PowerUp
+  - Enemy
   layers:
   - Default
   - TransparentFX
